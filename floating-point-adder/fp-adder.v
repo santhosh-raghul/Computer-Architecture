@@ -1,5 +1,5 @@
-`include "./modules/barrel-shifter.v"
-`include "./modules/adder-subtractor.v"
+`include "../modules/barrel-shifter.v"
+`include "../modules/adder-subtractor.v"
 
 module fp_adder(
 	input [31:0] a,b,
