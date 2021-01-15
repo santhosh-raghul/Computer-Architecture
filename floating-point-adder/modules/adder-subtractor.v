@@ -32,12 +32,17 @@ module adder_subtractor (a,b,cin,sum);
 	always @(*)
 	begin
 		if(cin==0)
+		begin
 			b1=b;
+			sum[24] = carry_16[24];
+		end
 		else
+		begin
 			b1=b^24'hffffff;
+			sum[24] = 1'b0;
+		end
 		partial_sum = a^b1;
 		sum[23:0] = partial_sum[23:0]^carry_16[23:0];
-		sum[24] = carry_16[24];
 	end
 
 endmodule
