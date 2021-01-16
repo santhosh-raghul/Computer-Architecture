@@ -117,39 +117,25 @@ endmodule
 
 module kpg_init (
 	input a, b,
-	output reg p, carry
+	output p, carry
 );
-	always @*
-	case ({a, b})
-		2'b00: begin
-			p = 1'b0; carry = 1'b0;
-		end
-		2'b11: begin
-			p = 1'b0; carry = 1'b1;
-		end
-		default: begin 
-			p = 1'b1; carry = 1'bx;
-		end
-	endcase
+
+	xor gen_p(p,a,b);
+	and gen_p(carry,a,b);
 
 endmodule
 
 module kpg (
 	input current_p, current_carry, from_p, from_carry,
-	output reg final_p, final_carry
+	output final_p, final_carry
 );
-	always @(*)
-	begin
-	
-		if({current_p, current_carry} == 2'b00)
-			{final_p, final_carry} = 2'b00;
-		
-		else if({current_p, current_carry} == 2'b01)
-			{final_p, final_carry} = 2'b01;
 
-		else
-			{final_p, final_carry} = {from_p, from_carry};
+	wire x,y,not_current_p;
 
-	end
+	and p(final_p,from_p,current_p);
+	not current_p_invert(not_current_p,current_p);
+	and c_prod1(x,not_current_p,current_carry);
+	and c_prod2(y,current_p,from_carry);
+	or c(final_carry,x,y);
 
 endmodule
