@@ -9,8 +9,9 @@ module fp_adder(
 	reg S1, S2, S3;
 	reg [7:0] E1, E2, E3, D;
 	reg [23:0] M1, M2;
+	reg [22:0] M3_final;
 	wire [24:0] M3;
-	reg [4:0] norm_shift;
+	reg [4:0] norm_shift,actual_shift;
 	wire [23:0]M2_shifted;
 	wire [24:0]M3_normalised;
 	integer q;
@@ -42,7 +43,6 @@ module fp_adder(
 		end
 
 		// denormalize M2; add/subt will happen in module
-		// E3=E1;
 		S3=S1;
 		D=E1-E2;
 		if(D>=23)	// shift more than 23 will yield only 0
@@ -52,7 +52,23 @@ module fp_adder(
 		norm_shift=0;
 		while(M3[24-norm_shift]==1'b0 && norm_shift<24)
 			norm_shift=norm_shift+1;
-		E3<=E1+norm_shift-1;
+		actual_shift=norm_shift-1;
+
+		if(M3[24]==1'b1)
+		begin
+			M3_final=M3[23:1];
+			E3=E1+1'b1;
+		end
+		else if(M3[23]==1'b1)
+		begin
+			M3_final=M3[22:0];
+			E3=E1;
+		end
+		else
+		begin
+			M3_final=M3_normalised[23:1];
+			E3=E1-actual_shift;
+		end
 
 		// chk for 0, infinty, NaN
 		if(E1==8'hff || E2==8'hff)	// infinity
@@ -64,7 +80,7 @@ module fp_adder(
 		else if(M3_normalised==0)	// output is zero
 			out = 32'b0;
 		else	// default case
-			out={S3,E3,M3_normalised[23:1]};
+			out={S3,E3,M3_final};
 
 	end
 
