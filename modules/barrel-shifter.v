@@ -110,11 +110,11 @@ module right_shift(in,shift,out);
 
 endmodule
 
-module mux(i0,i1,s,o);
+module mux(i1,i0,s,o);
 
 	input i0,i1,s;
 	output o;
 
-	assign o = (i0 & s) | (i1 & ~s);
+	assign o = (i1 & s) | (i0 & ~s);
 
 endmodule
