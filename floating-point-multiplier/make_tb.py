@@ -27,7 +27,7 @@ module top;
 	reg [31:0]a, b;
 	wire [31:0]out;
 
-	fp_multiplier FP1 (a, b, out);
+	m_fp_multiplier FP1 (a, b, out);
 
 	initial
 	begin\n"""
